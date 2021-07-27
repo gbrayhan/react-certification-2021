@@ -1,13 +1,17 @@
-import React, { useRef } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, {useRef} from 'react';
+import {Link, useHistory} from 'react-router-dom';
 
-import { useAuth } from '../../providers/Auth';
+import {useAuth} from '../../providers/Auth';
+import VideoItem from "../../components/VideoItem";
 import './Home.styles.css';
+import {HomeContainer, VideosContainer} from "./Home.page.styled";
+
+import {initialData} from "../../initialData";
 
 function HomePage() {
   const history = useHistory();
   const sectionRef = useRef(null);
-  const { authenticated, logout } = useAuth();
+  const {authenticated, logout} = useAuth();
 
   function deAuthenticate(event) {
     event.preventDefault();
@@ -16,7 +20,7 @@ function HomePage() {
   }
 
   return (
-    <section className="homepage" ref={sectionRef}>
+    <HomeContainer ref={sectionRef}>
       <h1>Hello stranger!</h1>
       {authenticated ? (
         <>
@@ -25,14 +29,22 @@ function HomePage() {
             <Link to="/" onClick={deAuthenticate}>
               ← logout
             </Link>
-            <span className="separator" />
+            <span className="separator"/>
             <Link to="/secret">show me something cool →</Link>
           </span>
         </>
       ) : (
         <Link to="/login">let me in →</Link>
       )}
-    </section>
+
+      <VideosContainer>
+        {initialData.items.map(item => (
+          <VideoItem title={item.snippet.title}
+                     image={item.snippet.thumbnails.high.url}
+                     description={item.snippet.description}/>
+        ))}
+      </VideosContainer>
+    </HomeContainer>
   );
 }
 
